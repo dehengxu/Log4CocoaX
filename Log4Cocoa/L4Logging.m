@@ -19,9 +19,13 @@ void log4Log(id object, int line, const char *file, const char *method, SEL sel,
 	}
 	
 	if ( isAssertion ) {
-		objc_msgSend([object l4Logger], sel, line, file, method, assertion, combinedMessage);
+        int (*action)(id, SEL, int, const char*, const char*, BOOL, id) = (int(*))objc_msgSend;
+		//objc_msgSend([object l4Logger], sel, line, file, method, assertion, combinedMessage);
+        action([object l4Logger], sel, line, file, method, assertion, combinedMessage);
 	} else {
-		objc_msgSend([object l4Logger], sel, line, file, method, combinedMessage, level, exception);
+        int (*action)(id, SEL, int, const char *, const char *, id, L4Level *, NSException *) = (int (*)())objc_msgSend;
+		//objc_msgSend([object l4Logger], sel, line, file, method, combinedMessage, level, exception);
+        action([object l4Logger], sel, line, file, method, combinedMessage, level, exception);
 	}
 	
 	[combinedMessage release];

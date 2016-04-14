@@ -167,6 +167,7 @@
             [components removeLastObject];
             NSString *logDir = [components componentsJoinedByString:@"/"];
             
+            
             if (![fileManager fileExistsAtPath:logDir]) {
                 if (![fileManager createDirectoryAtPath:logDir withIntermediateDirectories:YES attributes:nil error:nil]) {
                     [NSException raise:@"DirectoryNotFoundException" format:@"Could not create a directory at %@", logDir];
@@ -298,15 +299,17 @@
 - (NSString *)updateFileName
 {
     NSString *_loadNewFileName = [[self fileNamePattern] copy];
+    return _loadNewFileName;
     NSString *dir = nil;
     NSRange searchRange = NSMakeRange(NSNotFound, 0);
-    if ((searchRange = [_loadNewFileName rangeOfString:@"Documents"]).location == 0) {
+    
+    if ((searchRange = [_loadNewFileName rangeOfString:@"Documents"]).location != NSNotFound) {
         NSArray * result = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         dir = [result lastObject];
-    }else if ((searchRange = [_loadNewFileName rangeOfString:@"Library"]).location == 0) {
+    }else if ((searchRange = [_loadNewFileName rangeOfString:@"Library"]).location != NSNotFound) {
         NSArray * result = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
         dir = [result lastObject];
-    }else if ((searchRange = [_loadNewFileName rangeOfString:@"tmp"]).location == 0) {
+    }else if ((searchRange = [_loadNewFileName rangeOfString:@"tmp"]).location != NSNotFound) {
         dir = NSTemporaryDirectory();
     }else {
         NSArray * result = NSSearchPathForDirectoriesInDomains(NSApplicationDirectory, NSUserDomainMask, YES);
