@@ -17,15 +17,16 @@ void log4Log(id object, int line, const char *file, const char *method, SEL sel,
 	} else {
 		combinedMessage = [message retain];
 	}
-	
+
 	if ( isAssertion ) {
-        int (*action)(id, SEL, int, const char*, const char*, BOOL, id) = (int(*))objc_msgSend;
-		//objc_msgSend([object l4Logger], sel, line, file, method, assertion, combinedMessage);
+        void (*action)(id, SEL, int, const char*, const char*, BOOL, id) = (__typeof__(action))objc_msgSend;
         action([object l4Logger], sel, line, file, method, assertion, combinedMessage);
+        
+		//objc_msgSend([object l4Logger], sel, line, file, method, assertion, combinedMessage);
 	} else {
-        int (*action)(id, SEL, int, const char *, const char *, id, L4Level *, NSException *) = (int (*)())objc_msgSend;
-		//objc_msgSend([object l4Logger], sel, line, file, method, combinedMessage, level, exception);
+        void (*action)(id, SEL, int, const char *, const char *, id, L4Level *, NSException *) = (void (*)())objc_msgSend;
         action([object l4Logger], sel, line, file, method, combinedMessage, level, exception);
+		//objc_msgSend([object l4Logger], sel, line, file, method, combinedMessage, level, exception);
 	}
 	
 	[combinedMessage release];
